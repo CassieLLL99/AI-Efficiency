@@ -1,0 +1,1769 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>26 05 26 月会 AI 提效</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #111827;
+        --muted: #5f6b7a;
+        --line: #d7e2f0;
+        --soft: #f6f9fd;
+        --blue: #0b4ead;
+        --blue-dark: #082c68;
+        --green: #17823b;
+        --green-dark: #006e3a;
+        --orange: #f25a0a;
+        --paper: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", Arial,
+          sans-serif;
+        color: var(--ink);
+        background: #f4f7fb;
+        line-height: 1.5;
+      }
+
+      main {
+        width: min(1360px, calc(100% - 32px));
+        margin: 0 auto 32px;
+        display: grid;
+        gap: 28px;
+      }
+
+      .top-controls {
+        width: min(1360px, calc(100% - 32px));
+        margin: 22px auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .page-toggle {
+        display: inline-grid;
+        grid-template-columns: repeat(3, minmax(104px, 1fr));
+        gap: 4px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .page-toggle button {
+        border: 0;
+        border-radius: 6px;
+        padding: 9px 14px;
+        color: var(--muted);
+        background: transparent;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .page-toggle button.active {
+        color: #fff;
+        background: var(--blue);
+      }
+
+      .lang-toggle {
+        min-width: 112px;
+        border: 1px solid #8bb4ee;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: #fff;
+        background: var(--blue);
+        font: inherit;
+        font-weight: 800;
+        box-shadow: 0 10px 28px rgba(11, 78, 173, 0.22);
+        cursor: pointer;
+      }
+
+      .lang-toggle:hover {
+        background: #083f91;
+      }
+
+      .lang-toggle:focus-visible {
+        outline: 3px solid rgba(123, 174, 250, 0.55);
+        outline-offset: 3px;
+      }
+
+      .slide {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+        display: none;
+      }
+
+      .slide.active {
+        display: block;
+      }
+
+      .slide-title {
+        margin: 0 0 22px;
+        color: #4472c4;
+        font-size: clamp(25px, 3.1vw, 42px);
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .principle {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+        padding: 13px 18px;
+        border: 2px solid var(--blue);
+        border-radius: 8px;
+        background: #f8fbff;
+        font-weight: 700;
+      }
+
+      .mark {
+        color: var(--blue);
+        font-size: 28px;
+        line-height: 1;
+        flex: 0 0 auto;
+      }
+
+      .blue {
+        color: #003f9f;
+      }
+
+      .compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr 0.84fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .panel h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        padding: 11px 18px;
+        color: #fff;
+        font-size: 19px;
+        font-weight: 800;
+      }
+
+      .panel.manual h2 {
+        background: var(--blue);
+      }
+
+      .panel.ai h2 {
+        background: var(--green);
+      }
+
+      .steps {
+        display: grid;
+        gap: 0;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 38px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        min-height: 62px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e7edf5;
+      }
+
+      .step:last-child {
+        border-bottom: 0;
+      }
+
+      .step-spacer {
+        min-height: 62px;
+        border-bottom: 1px solid #e7edf5;
+      }
+
+      .step-number {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        background: #eef5ff;
+        color: var(--blue);
+        font-weight: 800;
+      }
+
+      .ai .step-number {
+        background: #ecf8f0;
+        color: var(--green);
+      }
+
+      .step-name {
+        font-weight: 700;
+      }
+
+      .step-time {
+        color: var(--blue);
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .ai .step-time {
+        color: var(--green);
+      }
+
+      .total {
+        padding: 14px 18px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .manual .total {
+        background: var(--blue);
+      }
+
+      .ai .total {
+        background: var(--green);
+      }
+
+      .efficiency {
+        display: grid;
+        gap: 14px;
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        background: #f8fbff;
+      }
+
+      .metric-label {
+        color: var(--orange);
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .metric-value {
+        margin-top: 4px;
+        color: var(--orange);
+        font-size: clamp(28px, 4vw, 46px);
+        font-weight: 900;
+        line-height: 1.05;
+      }
+
+      .metric-note {
+        border-color: #f5b28d;
+        background: #fff7f2;
+      }
+
+      .metric-note ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .callout {
+        grid-column: 1 / -1;
+        padding: 16px 18px;
+        border: 2px solid #7baefa;
+        border-radius: 8px;
+        background: #f7faff;
+        color: #003f9f;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .flow {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        margin-top: 4px;
+      }
+
+      .flow-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 17px 18px;
+        background: #f8fbff;
+      }
+
+      .flow-card strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--blue);
+        font-size: 18px;
+      }
+
+      .flow-card:nth-child(2) strong {
+        color: var(--green);
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 16px;
+        color: var(--blue-dark);
+        font-size: 23px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 920px;
+        background: #fff;
+      }
+
+      th,
+      td {
+        padding: 13px 14px;
+        border-bottom: 1px solid #e5edf6;
+        border-right: 1px solid #e5edf6;
+        vertical-align: middle;
+        font-size: 15px;
+      }
+
+      th:last-child,
+      td:last-child {
+        border-right: 0;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .total-row td {
+        background: #f7faff;
+        font-weight: 900;
+      }
+
+      th {
+        background: #f5f8fc;
+        color: var(--ink);
+        text-align: center;
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      thead .time-ai,
+      thead .time-manual {
+        font-size: 15px;
+      }
+
+      td:first-child {
+        font-weight: 800;
+      }
+
+      .time-manual {
+        color: #003f9f;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .time-ai {
+        color: var(--green-dark);
+        text-align: center;
+        font-size: 22px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .orange {
+        color: var(--orange);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 22px 0 14px;
+      }
+
+      .stats.compact {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 18px;
+        border: 1px solid #f5b28d;
+        border-radius: 8px;
+        background: #fff7f2;
+      }
+
+      .stat {
+        border-right: 1px solid #8999aa;
+        padding: 6px 18px 6px 0;
+      }
+
+      .stat:last-child {
+        border-right: 0;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .stat-value {
+        margin-top: 3px;
+        font-size: clamp(26px, 3vw, 36px);
+        font-weight: 900;
+      }
+
+      .stat:nth-child(1) .stat-value {
+        color: #003f9f;
+      }
+
+      .stat:nth-child(2) .stat-value {
+        color: var(--green-dark);
+      }
+
+      .stat:nth-child(3) .stat-value,
+      .stat:nth-child(4) .stat-value {
+        color: var(--orange);
+      }
+
+      .stats.compact .stat:nth-child(1) .stat-value,
+      .stats.compact .stat:nth-child(2) .stat-value {
+        color: var(--orange);
+      }
+
+      .stats.compact .stat-label {
+        color: var(--orange);
+      }
+
+      .note {
+        margin-top: 14px;
+        padding: 10px 14px;
+        border: 1px solid #7baefa;
+        border-radius: 8px;
+        background: #f7faff;
+        color: #003f9f;
+        font-size: 14px;
+      }
+
+      .stats-heading {
+        margin: 22px 0 -6px;
+        color: var(--blue-dark);
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .ppt-page {
+        margin-bottom: 34px;
+        padding: 0;
+      }
+
+      .ppt-page h2 {
+        margin: 0 0 18px;
+        color: #4472c4;
+        font-size: clamp(22px, 2.4vw, 32px);
+      }
+
+      .diagram {
+        position: relative;
+        width: 1360px;
+        max-width: 100%;
+        min-height: 740px;
+        margin: 0 auto;
+        overflow: visible;
+      }
+
+      .diagram svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .d-box {
+        position: absolute;
+        z-index: 1;
+        border-radius: 14px;
+        padding: 14px 16px;
+        background: #dfeaf7;
+        color: #111827;
+        font-size: 14px;
+        line-height: 1.45;
+        overflow: visible;
+      }
+
+      .d-box.small {
+        border-radius: 9px;
+        padding: 12px 14px;
+      }
+
+      .d-box h3,
+      .d-box h4 {
+        margin: 0 0 7px;
+        font-size: 15px;
+      }
+
+      .d-box ol,
+      .d-box ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .d-box li {
+        margin: 3px 0;
+      }
+
+      .d-box li.no-num {
+        list-style: none;
+      }
+
+      .d-input {
+        position: absolute;
+        z-index: 2;
+        color: #111827;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .d-input h4 {
+        margin: 0 0 3px;
+        color: #0b4ead;
+        font-size: 13px;
+      }
+
+      .d-input ol {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .d-input li {
+        margin: 2px 0;
+      }
+
+      .d-label {
+        position: absolute;
+        z-index: 2;
+        color: #0b4ead;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .d-label.orange {
+        color: var(--orange);
+      }
+
+      .slide1-task {
+        left: 0;
+        top: 253px;
+        width: 110px;
+        min-height: 60px;
+        text-align: center;
+        font-weight: 800;
+      }
+
+      .slide1-input-main {
+        left: 145px;
+        top: 94px;
+        width: 220px;
+      }
+
+      .slide1-consolidated-input {
+        left: 840px;
+        top: 526px;
+        width: 250px;
+      }
+
+      .slide1-prc {
+        left: 380px;
+        top: 88px;
+        width: 390px;
+        min-height: 390px;
+      }
+
+      .slide1-us-input {
+        left: 800px;
+        top: 205px;
+        width: 130px;
+      }
+
+      .slide1-us {
+        right: 0;
+        top: 88px;
+        width: 390px;
+        min-height: 390px;
+      }
+
+      .slide1-notes {
+        left: 0;
+        top: 540px;
+        width: 230px;
+        min-height: 175px;
+      }
+
+      .slide1-consolidated {
+        left: 380px;
+        top: 550px;
+        width: 390px;
+        min-height: 165px;
+      }
+
+      .skill-bars {
+        display: grid;
+        grid-template-columns: 1fr 2.1fr;
+        width: 1360px;
+        max-width: 100%;
+        margin: 0 auto 14px;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+
+      .skill-bars div {
+        padding: 12px 16px;
+      }
+
+      .skill-bars div:first-child {
+        background: #4472c4;
+      }
+
+      .skill-bars div:last-child {
+        background: #c00000;
+      }
+
+      .prompt-line {
+        position: relative;
+        margin: 0 0 28px;
+        border: 1px solid #b9cbea;
+        border-left: 10px solid #4472c4;
+        border-radius: 8px;
+        padding: 16px 18px 16px 26px;
+        background: #f8fbff;
+        box-shadow: 0 10px 24px rgba(68, 114, 196, 0.1);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .prompt-line::before {
+        content: "";
+        position: absolute;
+        left: -10px;
+        top: 0;
+        width: 10px;
+        height: 42px;
+        background: #4472c4;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+      }
+
+      .skill-diagram {
+        min-height: 560px;
+      }
+
+      .skill-box {
+        position: absolute;
+        z-index: 1;
+        width: 230px;
+        height: 64px;
+        border-radius: 8px;
+        padding: 14px 12px;
+        background: #d9e2f1;
+        text-align: center;
+        font-weight: 900;
+      }
+
+      .skill-box.peach {
+        background: #fce4d6;
+      }
+
+      .skill-box.review {
+        border: 4px dashed #d00000;
+        background: #fce4d6;
+      }
+
+      .skill-note {
+        position: absolute;
+        width: 230px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .skill-note ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .skill-1 {
+        left: 0;
+        top: 36px;
+      }
+
+      .skill-2 {
+        left: 370px;
+        top: 36px;
+      }
+
+      .skill-3 {
+        left: 740px;
+        top: 36px;
+      }
+
+      .skill-4 {
+        right: 0;
+        top: 36px;
+      }
+
+      .skill-7 {
+        left: 0;
+        top: 330px;
+      }
+
+      .skill-6 {
+        left: 430px;
+        top: 330px;
+      }
+
+      .skill-5 {
+        left: 860px;
+        top: 330px;
+      }
+
+      .note-1 {
+        left: 0;
+        top: 116px;
+      }
+
+      .note-2 {
+        left: 370px;
+        top: 116px;
+      }
+
+      .note-3 {
+        left: 740px;
+        top: 116px;
+      }
+
+      .note-4 {
+        right: 0;
+        top: 116px;
+      }
+
+      .note-7 {
+        left: 0;
+        top: 410px;
+      }
+
+      .note-6 {
+        left: 430px;
+        top: 410px;
+      }
+
+      .note-5 {
+        left: 860px;
+        top: 410px;
+      }
+
+      html[lang="en"] .d-input {
+        font-size: 12px;
+        line-height: 1.34;
+      }
+
+      html[lang="en"] .slide1-input-main {
+        left: 118px;
+        top: 54px;
+        width: 255px;
+      }
+
+      html[lang="en"] .slide1-us-input {
+        top: 188px;
+        width: 150px;
+      }
+
+      html[lang="en"] .slide1-consolidated-input {
+        top: 498px;
+        width: 275px;
+      }
+
+      html[lang="en"] .slide1-prc,
+      html[lang="en"] .slide1-us {
+        font-size: 13px;
+        line-height: 1.42;
+      }
+
+      html[lang="en"] .slide1-consolidated {
+        font-size: 13px;
+        line-height: 1.42;
+      }
+
+      html[lang="en"] .skill-note {
+        width: 270px;
+        font-size: 12px;
+        line-height: 1.36;
+      }
+
+      html[lang="en"] .note-4 {
+        width: 255px;
+      }
+
+      html[lang="en"] .note-5,
+      html[lang="en"] .note-6 {
+        width: 260px;
+      }
+
+      .ppt-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .ppt-grid.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .ppt-box {
+        border: 1px solid #dfe8f3;
+        border-radius: 8px;
+        padding: 16px;
+        background: #f8fbff;
+      }
+
+      .ppt-box.completed {
+        border-color: #c7d8f2;
+        background: #f2f7ff;
+      }
+
+      .ppt-box.verified {
+        border-color: #bfe3cc;
+        background: #f0fbf4;
+      }
+
+      .ppt-box.issue {
+        border-color: #f3c8ba;
+        background: #fff4ef;
+      }
+
+      .ppt-box h3 {
+        margin: 0 0 10px;
+        color: var(--blue);
+        font-size: 18px;
+      }
+
+      .ppt-box.green h3 {
+        color: var(--green);
+      }
+
+      .ppt-box.orange h3 {
+        color: var(--orange);
+      }
+
+      .ppt-box.completed h3 {
+        color: var(--blue);
+      }
+
+      .ppt-box.verified h3 {
+        color: var(--green);
+      }
+
+      .ppt-box.issue h3 {
+        color: var(--orange);
+      }
+
+      .ppt-box ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .ppt-box li {
+        margin: 6px 0;
+      }
+
+      .time-highlight {
+        color: #c00000;
+        font-weight: 900;
+      }
+
+      .ppt-process {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .ppt-step {
+        border: 1px solid #dfe8f3;
+        border-radius: 8px;
+        padding: 12px;
+        background: #fff;
+      }
+
+      .ppt-step span {
+        display: inline-grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        margin-bottom: 8px;
+        border-radius: 999px;
+        color: #fff;
+        background: var(--blue);
+        font-weight: 900;
+      }
+
+      .ppt-step strong {
+        display: block;
+        color: var(--blue-dark);
+      }
+
+      .prompt-box {
+        margin: 14px 0;
+        border-left: 4px solid var(--orange);
+        border-radius: 8px;
+        padding: 14px 16px;
+        background: #fff7f2;
+        font-weight: 700;
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .issue-list {
+        margin: 0;
+        padding-left: 0;
+        list-style: none;
+        counter-reset: issue;
+      }
+
+      .issue-list li {
+        counter-increment: issue;
+        position: relative;
+        padding-left: 30px;
+      }
+
+      .issue-list li::before {
+        content: counter(issue) "）";
+        position: absolute;
+        left: 0;
+        color: var(--orange);
+        font-weight: 900;
+      }
+
+      html[lang="en"] .issue-list li::before {
+        content: counter(issue) ") ";
+      }
+
+      @media (max-width: 900px) {
+        .top-controls {
+          align-items: stretch;
+          flex-direction: column-reverse;
+          margin-top: 10px;
+        }
+
+        .page-toggle,
+        .lang-toggle {
+          width: 100%;
+        }
+
+        main {
+          width: min(100% - 18px, 1180px);
+          margin: 0 auto 20px;
+        }
+
+        .compare,
+        .flow,
+        .stats,
+        .stats.compact,
+        .ppt-grid,
+        .ppt-grid.three,
+        .ppt-process,
+        .status-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stat {
+          border-right: 0;
+          border-bottom: 1px solid #8999aa;
+          padding-right: 0;
+          padding-bottom: 14px;
+        }
+
+        .stat:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        main {
+          width: 100%;
+          margin: 0;
+        }
+
+        .slide {
+          break-inside: avoid;
+          box-shadow: none;
+          border-radius: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-controls">
+      <div class="page-toggle" role="tablist" aria-label="页面切换">
+        <button class="active" type="button" data-page="1" role="tab" aria-selected="true">
+          第 1 页
+        </button>
+        <button type="button" data-page="2" role="tab" aria-selected="false">
+          第 2 页
+        </button>
+        <button type="button" data-page="3" role="tab" aria-selected="false">
+          第 3 页
+        </button>
+      </div>
+      <button class="lang-toggle" type="button" aria-label="Switch to English">
+        EN / 中
+      </button>
+    </div>
+
+    <main>
+      <section class="slide active" data-page-panel="1" aria-labelledby="slide-1-title">
+        <h1 id="slide-1-title" class="slide-title">
+          67家中概股首次回购/首次派息研究
+        </h1>
+
+        <div class="principle">
+          <span class="mark">◎</span>
+          <span>
+            最合理的方式不是纯手工，也不是完全交给AI，而是：
+            <span class="blue">人工跑通1-3家样本 → AI批量处理 → 人工复核总结</span>
+          </span>
+        </div>
+
+        <div class="compare">
+          <section class="panel manual" aria-labelledby="manual-title">
+            <h2 id="manual-title"><span>●</span>纯手工流程</h2>
+            <div class="steps">
+              <div class="step">
+                <span class="step-number">1</span>
+                <span class="step-name">公司名单、Ticker/CIK 对齐</span>
+                <span class="step-time">2-4小时</span>
+              </div>
+              <div class="step">
+                <span class="step-number">2</span>
+                <span class="step-name">SEC/IR 信息搜集</span>
+                <span class="step-time">67小时</span>
+              </div>
+              <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-name">整理数据来源backup</span>
+                <span class="step-time">包含在上一步</span>
+              </div>
+              <div class="step-spacer" aria-hidden="true"></div>
+              <div class="step">
+                <span class="step-number">4</span>
+                <span class="step-name">数据整理成 Excel</span>
+                <span class="step-time">33.5小时</span>
+              </div>
+              <div class="step">
+                <span class="step-number">5</span>
+                <span class="step-name">Excel 格式调整</span>
+                <span class="step-time">2-4小时</span>
+              </div>
+              <div class="step">
+                <span class="step-number">6</span>
+                <span class="step-name">总结汇报</span>
+                <span class="step-time">2-3小时</span>
+              </div>
+            </div>
+            <div class="total">合计：约106.5-111.5小时</div>
+          </section>
+
+          <section class="panel ai" aria-labelledby="ai-title">
+            <h2 id="ai-title"><span>◉</span>AI + 人工复核流程</h2>
+            <div class="steps">
+              <div class="step">
+                <span class="step-number">1</span>
+                <span class="step-name">公司名单、Ticker/CIK 对齐</span>
+                <span class="step-time">10-20分钟</span>
+              </div>
+              <div class="step">
+                <span class="step-number">2</span>
+                <span class="step-name">批量抓取 SEC/IR 资料</span>
+                <span class="step-time">约20分钟</span>
+              </div>
+              <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-name">整理数据来源backup</span>
+                <span class="step-time">包含在上一步</span>
+              </div>
+              <div class="step">
+                <span class="step-number">4</span>
+                <span class="step-name">找首次回购/首次派息</span>
+                <span class="step-time">约1小时</span>
+              </div>
+              <div class="step">
+                <span class="step-number">5</span>
+                <span class="step-name">误报与边界条件复核</span>
+                <span class="step-time">2-3小时</span>
+              </div>
+              <div class="step">
+                <span class="step-number">6</span>
+                <span class="step-name">Excel 格式调整</span>
+                <span class="step-time">20-40分钟</span>
+              </div>
+              <div class="step">
+                <span class="step-number">7</span>
+                <span class="step-name">总结汇报</span>
+                <span class="step-time">2-3小时</span>
+              </div>
+            </div>
+            <div class="total">合计：约6-8小时</div>
+          </section>
+
+          <aside class="efficiency" aria-label="效率提升">
+            <div class="metric">
+              <div class="metric-label">节省时间</div>
+              <div class="metric-value">约92%-95%</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">效率提升</div>
+              <div class="metric-value">约13-19倍</div>
+            </div>
+            <div class="metric metric-note">
+              <div class="metric-label">口径说明</div>
+              <ul>
+                <li>以上倍数基于一个新应届毕业生员工做这个分析花费时间的对比</li>
+                <li>实际效率提升倍数可以更高</li>
+              </ul>
+            </div>
+          </aside>
+
+          <div class="callout">
+            若先人工跑通1-3家样本，再AI批量处理并复核，总耗时约8-13小时。
+          </div>
+
+          <div class="flow" aria-label="推荐流程">
+            <div class="flow-card">
+              <strong>人工定义边界</strong>
+              <span>跑通1-3家样本，明确规则与特殊案例</span>
+            </div>
+            <div class="flow-card">
+              <strong>AI批量搜集整理</strong>
+              <span>自动抓取、识别、结构化、生成初稿</span>
+            </div>
+            <div class="flow-card">
+              <strong>人工复核与总结</strong>
+              <span>复核关键结论，调整格式，输出报告</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-page-panel="2" aria-labelledby="slide-2-title">
+        <h1 id="slide-2-title" class="slide-title">AI上下游产业链研究</h1>
+
+        <div class="principle">
+          <span class="mark">◎</span>
+          <span>AI 提升的是研究生产速度；研究质量仍取决于人的行业理解和验证能力</span>
+        </div>
+
+        <h2 class="section-heading"><span class="mark">▣</span>研究流程耗时拆分</h2>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>工作环节</th>
+                <th class="blue">手工耗时</th>
+                <th class="time-ai">AI 协作耗时</th>
+                <th class="orange">人工必须做</th>
+                <th class="time-ai">AI 主要帮助</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 研究框架与口径判断</td>
+                <td class="time-manual">15h</td>
+                <td class="time-ai">5h</td>
+                <td>判断产业链逻辑，避免公司错分层</td>
+                <td>搭初版框架，暴露遗漏</td>
+              </tr>
+              <tr>
+                <td>2 信息搜集与交叉验证</td>
+                <td class="time-manual">35h</td>
+                <td class="time-ai">6h</td>
+                <td>阅读官网、年报、行业报告并 cross check</td>
+                <td>定位资料，摘要，提取角色</td>
+              </tr>
+              <tr>
+                <td>3 内容整理与中英表达</td>
+                <td class="time-manual">24h</td>
+                <td class="time-ai">0.5h</td>
+                <td>判断术语和投研表达是否准确</td>
+                <td>生成双语解释、术语表、统一口径</td>
+              </tr>
+              <tr>
+                <td>4 Dashboard / HTML / PPT 制作</td>
+                <td class="time-manual">20h</td>
+                <td class="time-ai">3h</td>
+                <td>判断页面结构和交互逻辑是否清楚</td>
+                <td>生成 HTML/CSS/JS、响应式布局</td>
+              </tr>
+              <tr>
+                <td>5 流程图与视觉解释（21张图片）</td>
+                <td class="time-manual">100h</td>
+                <td class="time-ai">3h</td>
+                <td>判断技术流程图是否正确</td>
+                <td>生成客制化流程图和剖面图</td>
+              </tr>
+              <tr>
+                <td>6 检查、修正与交付</td>
+                <td class="time-manual">2h</td>
+                <td class="time-ai">2h</td>
+                <td>最终审阅、纠错、确认口径</td>
+                <td>检查布局、链接、图片嵌入</td>
+              </tr>
+              <tr class="total-row">
+                <td>合计</td>
+                <td class="time-manual">196h</td>
+                <td class="time-ai">19.5h</td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="stats-heading">◷ 当前 HTML 成品口径</h2>
+
+        <div class="stats compact" aria-label="当前 HTML 成品口径">
+          <div class="stat">
+            <div class="stat-label">节省:</div>
+            <div class="stat-value">约176.5h</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">效率提升:</div>
+            <div class="stat-value">约10.1x</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-page-panel="3" aria-labelledby="slide-3-title">
+        <h1 id="slide-3-title" class="slide-title">报告AI化</h1>
+
+        <section class="ppt-page">
+          <h2>基于 Openclaw / Codex 训练财务报告自动化Skill</h2>
+          <div class="diagram" aria-label="基于 Openclaw / Codex 训练财务报告自动化Skill 流程图">
+            <svg viewBox="0 0 1360 740" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="#4472c4"></path>
+                </marker>
+              </defs>
+              <path d="M110 283 L380 283" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-blue)"></path>
+              <path d="M770 283 L970 283" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-blue)"></path>
+              <path d="M1165 478 L1165 633 L770 633" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-blue)"></path>
+              <path d="M380 633 L230 633" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-blue)"></path>
+            </svg>
+
+            <div class="d-input slide1-input-main">
+              <h4>输入</h4>
+              <ol>
+                <li><span class="orange">科目余额表（4,449行，25列）</span></li>
+                <li>PRC科目映射（1至4级科目）</li>
+                <li><span class="orange">单体调整明细表</span></li>
+                <li><span class="orange">USD HKD 汇率</span></li>
+                <li>公司集团股权架构关系</li>
+                <li>PRC 单体报表空白模板</li>
+              </ol>
+            </div>
+
+            <div class="d-box small slide1-task">任务开始</div>
+
+            <div class="d-box slide1-prc">
+              <h3>11个单体PRC单体sheet（500+行×8列全公式，3种Check逻辑）</h3>
+              <ol>
+                <li>Yuanbao Inc. PRC单体.xlsx</li>
+                <li>Yuanbao HK PRC单体.xlsx</li>
+                <li>香港环亚 PRC单体.xlsx</li>
+                <li>科创 PRC单体.xlsx</li>
+                <li>数科 PRC单体.xlsx</li>
+                <li>福宁 PRC单体.xlsx</li>
+                <li>易呼智云 PRC单体.xlsx</li>
+                <li>木易健康 PRC单体.xlsx</li>
+                <li>元保经纪 PRC单体.xlsx</li>
+                <li>元宝经纪广西分 PRC单体.xlsx</li>
+                <li>首信代理 PRC单体.xlsx</li>
+                <li class="no-num">…….</li>
+              </ol>
+            </div>
+
+            <div class="d-input slide1-us-input">
+              <h4>输入</h4>
+              <ol>
+                <li>US单体报表空白模板</li>
+              </ol>
+            </div>
+
+            <div class="d-box slide1-us">
+              <h3>11个单体 US 单体sheet（500+行×6列全公式，3种Check逻辑）</h3>
+              <ol>
+                <li>Yuanbao Inc. US单体.xlsx</li>
+                <li>Yuanbao HK US单体.xlsx</li>
+                <li>香港环亚 US单体.xlsx</li>
+                <li>科创 US单体.xlsx</li>
+                <li>数科 US单体.xlsx</li>
+                <li>福宁 US单体.xlsx</li>
+                <li>易呼智云 US单体.xlsx</li>
+                <li>木易健康 US单体.xlsx</li>
+                <li>元保经纪 US单体.xlsx</li>
+                <li>元宝经纪广西分 US单体.xlsx</li>
+                <li>首信代理 US单体.xlsx</li>
+                <li class="no-num">…….</li>
+              </ol>
+            </div>
+
+            <div class="d-input slide1-consolidated-input">
+              <h4>输入</h4>
+              <ol>
+                <li><span class="orange">合并抵消表</span></li>
+                <li>PRC 合并报表空白模板</li>
+                <li>US 合并报表空白模板</li>
+              </ol>
+            </div>
+
+            <div class="d-box small slide1-notes">
+              <ol>
+                <li>附注分析sheet</li>
+                <li>BS-group sheet</li>
+                <li>PL-group sheet</li>
+                <li>Consolidation sheet</li>
+                <li>VIE sheet</li>
+                <li>RNA sheet</li>
+              </ol>
+            </div>
+
+            <div class="d-box slide1-consolidated">
+              <ol>
+                <li>PRC 合并报表Sheet（500+行×20列全公式，2种Check逻辑）</li>
+                <li style="margin-top:22px;">US 合并报表Sheet（500+行×20列全公式，2种Check逻辑）</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section class="ppt-page">
+          <h2>Consolidation-Review Skill 架构</h2>
+          <div class="skill-bars">
+            <div>Python脚本 = 稳定引擎（标准逻辑）</div>
+            <div>Skill审阅层 = 灵活适配（应对标准逻辑外的特殊情况，AI检查、AI思考、AI修正）</div>
+          </div>
+          <p class="prompt-line">
+            Prompt 1：你做出来的这些python脚本，如果某一期我给你的科目余额表里科目有些变化，你做出来的结果不对了，按照现在你的逻辑会改python脚本，但是这个调整也许只适用于这一期，而你改掉了整个脚本，后续做下一期的时候又会做不对了。你现在的模式没有灵活性。你觉得是不是做成一个skill，你用python跑完之后，skill来补充一些灵活性，你跑完python后直接去检查跑出来的表，如果有任何check出现了问题，你可以检查并调整你的逻辑，但只是一次性的调整，不动到所有python。
+          </p>
+
+          <div class="diagram skill-diagram" aria-label="Consolidation-Review Skill 架构流程图">
+            <svg viewBox="0 0 1360 560" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <marker id="arrow-skill" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="#4472c4"></path>
+                </marker>
+              </defs>
+              <path d="M230 68 L370 68" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-skill)"></path>
+              <path d="M600 68 L740 68" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-skill)"></path>
+              <path d="M970 68 L1130 68" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-skill)"></path>
+              <path d="M1245 100 L1245 362 L1090 362" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-skill)"></path>
+              <path d="M860 362 L660 362" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-skill)"></path>
+              <path d="M430 362 L230 362" stroke="#4472c4" stroke-width="2" fill="none" marker-end="url(#arrow-skill)"></path>
+            </svg>
+
+            <div class="skill-box skill-1">1. 配置注入</div>
+            <div class="skill-note note-1">inject_config.py 注入文件名 → 6个脚本11处自动更新</div>
+
+            <div class="skill-box skill-2">2. 脚本运行</div>
+            <div class="skill-note note-2">
+              按顺序执行6个Python脚本
+              <ol>
+                <li>step_A_formula.py - PRC单体报</li>
+                <li>step_A_US_formula_v2.py - US单体报表</li>
+                <li>step_B_consolidation.py - 合并汇总</li>
+                <li>step_C_elimination.py - 合并抵消</li>
+                <li>step_D_notes.py - 附注</li>
+                <li>Step_E_sheets.py - SEC披露附表</li>
+              </ol>
+            </div>
+
+            <div class="skill-box peach skill-3">3. 公式计算</div>
+            <div class="skill-note note-3">macOS open Excel → AppleScript保存触发计算</div>
+
+            <div class="skill-box peach review skill-4">4. 自动审阅</div>
+            <div class="skill-note note-4">review_checks.py 扫描所有含"check"的行</div>
+
+            <div class="skill-box peach skill-7">7. 记录固化</div>
+            <div class="skill-note note-7">记录到memory</div>
+
+            <div class="skill-box peach review skill-6">6. 修补处理</div>
+            <div class="skill-note note-6">patch_cell.py 修补（或确认为正常差异）</div>
+
+            <div class="skill-box peach review skill-5">5. 诊断分析</div>
+            <div class="skill-note note-5">根因定位：数据问题 / 脚本bug / 一次性特殊</div>
+          </div>
+        </section>
+
+        <section class="ppt-page">
+          <h2>当前进度</h2>
+          <div class="status-grid">
+            <div class="ppt-box completed">
+              <h3>已完成</h3>
+              <ul>
+                <li>Openclaw：用Claude Opus4.6训练</li>
+                <li>Codex：用GPT5.5训练</li>
+                <li>训练前数据处理、脱敏，AI输出模板搭建等，共计花费约<span class="time-highlight">20天</span></li>
+                <li>训练共计花费约<span class="time-highlight">6天</span></li>
+              </ul>
+            </div>
+            <div class="ppt-box verified">
+              <h3>已验证</h3>
+              <ul>
+                <li>已验证AI Agent在输入完整准确的前提下可以正确执行此套逻辑，输出正确报表</li>
+              </ul>
+            </div>
+            <div class="ppt-box issue">
+              <h3>当前存在的问题</h3>
+              <ol class="issue-list">
+                <li>在本地版大模型不够强的情况下，训练是依靠外部模型，所有涉及到的数据和表格都需要脱敏处理，花费大量时间</li>
+                <li>准确的合并报表的出具需要准确完整无误的输入，而输入的底层账和调整数据，需要财务各组之间的协同联动，以及和审计的协同，很难保证一次输入准确，需要多次反复调整输入</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script>
+      const translations = {
+        "26 05 26 月会 AI 提效": "May 26 Monthly Meeting: AI Efficiency Gains",
+        "第 1 页": "Page 1",
+        "第 2 页": "Page 2",
+        "第 3 页": "Page 3",
+        "报告AI化": "AI-enabled Reporting",
+        "67家中概股首次回购/首次派息研究":
+          "Research on First Buybacks / First Dividends of 67 Chinese ADRs",
+        "最合理的方式不是纯手工，也不是完全交给AI，而是：":
+          "The most reasonable approach is neither fully manual nor fully delegated to AI, but:",
+        "人工跑通1-3家样本 → AI批量处理 → 人工复核总结":
+          "Manually validate 1-3 samples -> AI batch processing -> Manual review and synthesis",
+        "纯手工流程": "Manual Workflow",
+        "AI + 人工复核流程": "AI + Manual Review Workflow",
+        "公司名单、Ticker/CIK 对齐": "Company list and Ticker/CIK alignment",
+        "2-4小时": "2-4 hrs",
+        "SEC/IR 信息搜集": "SEC/IR information collection",
+        "67小时": "67 hrs",
+        "数据整理成 Excel": "Organize data into Excel",
+        "33.5小时": "33.5 hrs",
+        "整理数据来源backup": "Organize data-source backup",
+        "包含在上一步": "Included in the previous step",
+        "Excel 格式调整": "Excel formatting",
+        "总结汇报": "Summary report",
+        "2-3小时": "2-3 hrs",
+        "合计：约106.5-111.5小时": "Total: approx. 106.5-111.5 hrs",
+        "批量抓取 SEC/IR 资料": "Batch fetch SEC/IR materials",
+        "10-20分钟": "10-20 min",
+        "约20分钟": "Approx. 20 min",
+        "找首次回购/首次派息": "Identify first buybacks / first dividends",
+        "约1小时": "Approx. 1 hr",
+        "误报与边界条件复核": "Review false positives and boundary cases",
+        "20-40分钟": "20-40 min",
+        "合计：约6-8小时": "Total: approx. 6-8 hrs",
+        "节省时间": "Time Saved",
+        "约92%-95%": "Approx. 92%-95%",
+        "效率提升": "Efficiency Gain",
+        "约13-19倍": "Approx. 13-19x",
+        "口径说明": "Basis Note",
+        "以上倍数基于一个新应届毕业生员工做这个分析花费时间的对比":
+          "The multiples above are based on the time a new graduate employee would spend on this analysis",
+        "实际效率提升倍数可以更高":
+          "The actual efficiency gain could be even higher",
+        "若先人工跑通1-3家样本，再AI批量处理并复核，总耗时约8-13小时。":
+          "If 1-3 samples are validated manually first, then processed in batch by AI and reviewed, total time is approx. 8-13 hrs.",
+        "人工定义边界": "Define Boundaries Manually",
+        "跑通1-3家样本，明确规则与特殊案例":
+          "Validate 1-3 samples to clarify rules and special cases",
+        "AI批量搜集整理": "AI Batch Collection and Structuring",
+        "自动抓取、识别、结构化、生成初稿":
+          "Automatically fetch, identify, structure, and draft",
+        "人工复核与总结": "Manual Review and Synthesis",
+        "复核关键结论，调整格式，输出报告":
+          "Review key conclusions, adjust formatting, and produce the report",
+        "AI上下游产业链研究": "AI Upstream and Downstream Value Chain Research",
+        "AI 提升的是研究生产速度；研究质量仍取决于人的行业理解和验证能力":
+          "AI improves research production speed; research quality still depends on human industry understanding and verification ability",
+        "研究流程耗时拆分": "Research Workflow Time Breakdown",
+        "工作环节": "Workstream",
+        "手工耗时": "Manual Time",
+        "AI 协作耗时": "AI-Assisted Time",
+        "人工必须做": "Human Must Do",
+        "AI 主要帮助": "Main AI Contribution",
+        "1 研究框架与口径判断": "1 Research framework and scope judgment",
+        "15h": "15h",
+        "5h": "5h",
+        "判断产业链逻辑，避免公司错分层":
+          "Judge value-chain logic and avoid misclassifying companies",
+        "搭初版框架，暴露遗漏": "Build an initial framework and expose gaps",
+        "2 信息搜集与交叉验证": "2 Information collection and cross-checking",
+        "35h": "35h",
+        "6h": "6h",
+        "阅读官网、年报、行业报告并 cross check":
+          "Read official websites, annual reports, and industry reports, then cross-check",
+        "定位资料，摘要，提取角色":
+          "Locate materials, summarize, and extract each company's role",
+        "3 内容整理与中英表达": "3 Content organization and bilingual wording",
+        "24h": "24h",
+        "0.5h": "0.5h",
+        "判断术语和投研表达是否准确":
+          "Judge whether terminology and investment-research wording are accurate",
+        "生成双语解释、术语表、统一口径":
+          "Generate bilingual explanations, glossaries, and consistent wording",
+        "4 Dashboard / HTML / PPT 制作": "4 Dashboard / HTML / PPT production",
+        "20h": "20h",
+        "3h": "3h",
+        "判断页面结构和交互逻辑是否清楚":
+          "Judge whether page structure and interaction logic are clear",
+        "生成 HTML/CSS/JS、响应式布局":
+          "Generate HTML/CSS/JS and responsive layout",
+        "5 流程图与视觉解释": "5 Flowcharts and visual explanations",
+        "5 流程图与视觉解释（21张图片）":
+          "5 Flowcharts and visual explanations (21 images)",
+        "100h": "100h",
+        "判断技术流程图是否正确": "Judge whether technical flowcharts are correct",
+        "生成客制化流程图和剖面图":
+          "Generate customized flowcharts and cutaway diagrams",
+        "6 检查、修正与交付": "6 Check, revise, and deliver",
+        "2h": "2h",
+        "最终审阅、纠错、确认口径":
+          "Final review, correction, and scope confirmation",
+        "检查布局、链接、图片嵌入":
+          "Check layout, links, and embedded images",
+        "合计": "Total",
+        "196h": "196h",
+        "◷ 当前 HTML 成品口径": "◷ Current HTML Deliverable Baseline",
+        "手工:": "Manual:",
+        "AI 协作:": "AI-assisted:",
+        "19.5h": "19.5h",
+        "节省:": "Saved:",
+        "约176.5h": "Approx. 176.5h",
+        "效率提升:": "Efficiency gain:",
+        "约10.1x": "Approx. 10.1x",
+        "基于 Openclaw / Codex 训练财务报告自动化Skill":
+          "Training a Financial Reporting Automation Skill with Openclaw / Codex",
+        "输入": "Input",
+        "科目余额表（4,449行，25列）":
+          "Trial balance (4,449 rows, 25 columns)",
+        "PRC科目映射（1至4级科目）":
+          "PRC account mapping (level 1 to level 4 accounts)",
+        "单体调整明细表": "Standalone adjustment detail table",
+        "USD HKD 汇率": "USD/HKD exchange rate",
+        "公司集团股权架构关系": "Group equity ownership structure",
+        "PRC 单体报表空白模板": "Blank PRC standalone report template",
+        "任务开始": "Task Start",
+        "11个单体PRC单体sheet（500+行×8列全公式，3种Check逻辑）":
+          "11 PRC standalone sheets (500+ rows x 8 columns, all formulas, 3 check logics)",
+        "Yuanbao Inc. PRC单体.xlsx": "Yuanbao Inc. PRC standalone.xlsx",
+        "Yuanbao HK PRC单体.xlsx": "Yuanbao HK PRC standalone.xlsx",
+        "香港环亚 PRC单体.xlsx": "Hong Kong Huanya PRC standalone.xlsx",
+        "科创 PRC单体.xlsx": "Kechuang PRC standalone.xlsx",
+        "数科 PRC单体.xlsx": "Shuke PRC standalone.xlsx",
+        "福宁 PRC单体.xlsx": "Funing PRC standalone.xlsx",
+        "易呼智云 PRC单体.xlsx": "Yihu Zhiyun PRC standalone.xlsx",
+        "木易健康 PRC单体.xlsx": "Muyi Health PRC standalone.xlsx",
+        "元保经纪 PRC单体.xlsx": "Yuanbao Brokerage PRC standalone.xlsx",
+        "元宝经纪广西分 PRC单体.xlsx":
+          "Yuanbao Brokerage Guangxi Branch PRC standalone.xlsx",
+        "首信代理 PRC单体.xlsx": "Shouxin Agency PRC standalone.xlsx",
+        "…….": "......",
+        "US单体报表空白模板": "Blank US standalone report template",
+        "11个单体 US 单体sheet（500+行×6列全公式，3种Check逻辑）":
+          "11 US standalone sheets (500+ rows x 6 columns, all formulas, 3 check logics)",
+        "Yuanbao Inc. US单体.xlsx": "Yuanbao Inc. US standalone.xlsx",
+        "Yuanbao HK US单体.xlsx": "Yuanbao HK US standalone.xlsx",
+        "香港环亚 US单体.xlsx": "Hong Kong Huanya US standalone.xlsx",
+        "科创 US单体.xlsx": "Kechuang US standalone.xlsx",
+        "数科 US单体.xlsx": "Shuke US standalone.xlsx",
+        "福宁 US单体.xlsx": "Funing US standalone.xlsx",
+        "易呼智云 US单体.xlsx": "Yihu Zhiyun US standalone.xlsx",
+        "木易健康 US单体.xlsx": "Muyi Health US standalone.xlsx",
+        "元保经纪 US单体.xlsx": "Yuanbao Brokerage US standalone.xlsx",
+        "元宝经纪广西分 US单体.xlsx":
+          "Yuanbao Brokerage Guangxi Branch US standalone.xlsx",
+        "首信代理 US单体.xlsx": "Shouxin Agency US standalone.xlsx",
+        "合并抵消表": "Consolidation elimination table",
+        "PRC 合并报表空白模板": "Blank PRC consolidated report template",
+        "US 合并报表空白模板": "Blank US consolidated report template",
+        "附注分析sheet": "Notes analysis sheet",
+        "BS-group sheet": "BS-group sheet",
+        "PL-group sheet": "PL-group sheet",
+        "Consolidation sheet": "Consolidation sheet",
+        "VIE sheet": "VIE sheet",
+        "RNA sheet": "RNA sheet",
+        "PRC 合并报表Sheet（500+行×20列全公式，2种Check逻辑）":
+          "PRC consolidated report sheet (500+ rows x 20 columns, all formulas, 2 check logics)",
+        "US 合并报表Sheet（500+行×20列全公式，2种Check逻辑）":
+          "US consolidated report sheet (500+ rows x 20 columns, all formulas, 2 check logics)",
+        "Consolidation-Review Skill 架构":
+          "Consolidation-Review Skill Architecture",
+        "Python脚本 = 稳定引擎（标准逻辑）":
+          "Python scripts = stable engine (standard logic)",
+        "Skill审阅层 = 灵活适配（应对标准逻辑外的特殊情况，AI检查、AI思考、AI修正）":
+          "Skill review layer = flexible adaptation (handling exceptions outside standard logic, AI checks, AI reasoning, AI fixes)",
+        "Prompt 1：你做出来的这些python脚本，如果某一期我给你的科目余额表里科目有些变化，你做出来的结果不对了，按照现在你的逻辑会改python脚本，但是这个调整也许只适用于这一期，而你改掉了整个脚本，后续做下一期的时候又会做不对了。你现在的模式没有灵活性。你觉得是不是做成一个skill，你用python跑完之后，skill来补充一些灵活性，你跑完python后直接去检查跑出来的表，如果有任何check出现了问题，你可以检查并调整你的逻辑，但只是一次性的调整，不动到所有python。":
+          "Prompt 1: For these Python scripts you created, if the trial balance in a given period has account changes and the output becomes incorrect, your current logic would modify the Python scripts. But that adjustment may only apply to that period; changing the whole script could make the next period wrong again. The current mode is not flexible. Would it make sense to turn this into a skill, where Python runs first and the skill adds flexibility afterward? After Python finishes, the skill should directly inspect the generated workbook. If any check has an issue, it can inspect and adjust the logic, but only as a one-time adjustment without changing all Python scripts.",
+        "1. 配置注入": "1. Configuration Injection",
+        "inject_config.py 注入文件名 → 6个脚本11处自动更新":
+          "inject_config.py injects file names -> 11 automatic updates across 6 scripts",
+        "2. 脚本运行": "2. Script Execution",
+        "按顺序执行6个Python脚本":
+          "Run 6 Python scripts in sequence",
+        "step_A_formula.py - PRC单体报":
+          "step_A_formula.py - PRC standalone report",
+        "step_A_US_formula_v2.py - US单体报表":
+          "step_A_US_formula_v2.py - US standalone report",
+        "step_B_consolidation.py - 合并汇总":
+          "step_B_consolidation.py - consolidated summary",
+        "step_C_elimination.py - 合并抵消":
+          "step_C_elimination.py - consolidation eliminations",
+        "step_D_notes.py - 附注": "step_D_notes.py - notes",
+        "Step_E_sheets.py - SEC披露附表":
+          "Step_E_sheets.py - SEC disclosure schedules",
+        "3. 公式计算": "3. Formula Calculation",
+        "macOS open Excel → AppleScript保存触发计算":
+          "macOS opens Excel -> AppleScript saves to trigger calculation",
+        "4. 自动审阅": "4. Automated Review",
+        "review_checks.py 扫描所有含\"check\"的行":
+          "review_checks.py scans all rows containing \"check\"",
+        "7. 记录固化": "7. Record and Persist",
+        "记录到memory": "Record to memory",
+        "6. 修补处理": "6. Patch Handling",
+        "patch_cell.py 修补（或确认为正常差异）":
+          "patch_cell.py patches cells (or confirms normal differences)",
+        "5. 诊断分析": "5. Diagnostic Analysis",
+        "根因定位：数据问题 / 脚本bug / 一次性特殊":
+          "Root-cause diagnosis: data issue / script bug / one-time exception",
+        "当前进度": "Current Progress",
+        "已完成": "Completed",
+        "已验证": "Verified",
+        "已完成 / 已验证": "Completed / Verified",
+        "Openclaw：用Claude Opus4.6训练":
+          "Openclaw: trained with Claude Opus 4.6",
+        "Codex：用GPT5.5训练": "Codex: trained with GPT-5.5",
+        "训练前数据处理、脱敏，AI输出模板搭建等，共计花费约":
+          "Pre-training data processing, desensitization, AI output template setup, etc. took about ",
+        "20天": "20 days",
+        "训练前数据处理、脱敏，AI输出模板搭建等，共计花费约20天":
+          "Pre-training data processing, desensitization, AI output template setup, etc. took about 20 days in total",
+        "训练共计花费约": "Training took about ",
+        "6天": "6 days",
+        "训练共计花费约6天": "Training took about 6 days in total",
+        "已验证AI Agent在输入完整准确的前提下可以正确执行此套逻辑，输出正确报表":
+          "Verified that the AI agent can correctly execute this logic and output accurate reports when inputs are complete and accurate",
+        "当前存在的问题": "Current Issues",
+        "在本地版大模型不够强的情况下，训练是依靠外部模型，所有涉及到的数据和表格都需要脱敏处理，花费大量时间":
+          "Because the local large model is not strong enough, training relies on external models, so all related data and spreadsheets must be desensitized, which takes significant time",
+        "准确的合并报表的出具需要准确完整无误的输入，而输入的底层账和调整数据，需要财务各组之间的协同联动，以及和审计的协同，很难保证一次输入准确，需要多次反复调整输入":
+          "Accurate consolidated reports require complete and accurate inputs. The underlying ledgers and adjustment data require coordination across finance teams and with auditors, making it hard to get the input right on the first try and often requiring repeated input adjustments"
+      };
+
+      const textNodes = [];
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode(node) {
+            if (node.parentElement.closest("script, style, .lang-toggle")) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            return node.nodeValue.trim()
+              ? NodeFilter.FILTER_ACCEPT
+              : NodeFilter.FILTER_REJECT;
+          }
+        }
+      );
+
+      while (walker.nextNode()) {
+        textNodes.push({
+          node: walker.currentNode,
+          zh: walker.currentNode.nodeValue
+        });
+      }
+
+      const toggle = document.querySelector(".lang-toggle");
+      const pageButtons = document.querySelectorAll("[data-page]");
+      const pagePanels = document.querySelectorAll("[data-page-panel]");
+      let lang = "zh";
+
+      function translateText(original, nextLang) {
+        const trimmed = original.trim();
+        const translated = nextLang === "en" ? translations[trimmed] : trimmed;
+        if (!translated) return original;
+        return original.replace(trimmed, translated);
+      }
+
+      function setLanguage(nextLang) {
+        lang = nextLang;
+        document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+        document.title =
+          lang === "en"
+            ? translations["26 05 26 月会 AI 提效"]
+            : "26 05 26 月会 AI 提效";
+        textNodes.forEach((entry) => {
+          entry.node.nodeValue = translateText(entry.zh, lang);
+        });
+        toggle.setAttribute(
+          "aria-label",
+          lang === "en" ? "切换到中文" : "Switch to English"
+        );
+      }
+
+      toggle.addEventListener("click", () => {
+        setLanguage(lang === "zh" ? "en" : "zh");
+      });
+
+      pageButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const page = button.dataset.page;
+          pageButtons.forEach((item) => {
+            const active = item.dataset.page === page;
+            item.classList.toggle("active", active);
+            item.setAttribute("aria-selected", String(active));
+          });
+          pagePanels.forEach((panel) => {
+            panel.classList.toggle("active", panel.dataset.pagePanel === page);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
